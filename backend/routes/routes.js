@@ -1,58 +1,60 @@
-const express = require('express')
-const router = express.Router()
-const WorkOut = require('../models/WorkOutData')
+const router = require("express").Router();
+const { User, validate } = require("../models/user");
+const bcrypt = require("bcrypt");
+const Joi = require("joi");
 
+router.post("/signup", async (req, res) => {
+	try {
+		const { error } = validate(req.body);
+		if (error)
+			return res.status(400).send({ message: error.details[0].message });
 
-router.get('/test',(req,res)=>{
-    res.send('Inside route')
-})
-//Get all Workout logs
-router.get('/',async(req,res)=>{
-    try {
-        const response = await WorkOut.find({})
-        res.send(response)
-    } catch (error) {
-        console.log('Error in finding all logs');
-    }
-})
+		const user = await User.findOne({ email: req.body.email });
+		if (user)
+			return res
+				.status(409)
+				.send({ message: "User with given email already Exist!" });
 
-//Get all Workout logs of Single User
-router.get('/:userName',async(req,res)=>{
-    try {
-        console.log('inside username', req.params.userName);
-        const response = await WorkOut.find({userName : req.params.userName})
-        res.send(response)
-    } catch (error) {
-        console.log('Error in finding all logs of particular user');
-    }
-})
+		const salt = await bcrypt.genSalt(Number(process.env.SALT));
+		const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-//Delete Log
-router.delete('/:id',async(req,res)=>{
-    try {
-        console.log('delete id : ', req.params.id);
-        const response = await WorkOut.deleteOne({_id : req.params.id})
-        res.send(response)
-    } catch (error) {
-        console.log('Error in finding all logs of particular user');
-    }
-})
-//Post WorkOut logs
-router.post('/',async (req,res)=>{
-    console.log(req.body);
-    try {
-        let workLog = new WorkOut({
-            userName : req.body.userName,
-            workoutName : req.body.workoutName,
-            duration : req.body.duration,
-            numberOfRounds : req.body.numberOfRounds,
-            created : req.body.created
-        })
-        const response = await workLog.save()
-        res.send(response)
-    } catch (error) {
-        console.log('Error in Post Requet',err);
-    }
-   
-})
-module.exports = router
+		await new User({ ...req.body, password: hashPassword }).save();
+		res.status(201).send({ message: "User created successfully" });
+	} catch (error) {
+		res.status(500).send({ message: "Internal Server Error" });
+	}
+});
+
+router.post("/login", async (req, res) => {
+	try {
+		const { error } = validate(req.body);
+		if (error)
+			return res.status(400).send({ message: error.details[0].message });
+
+		const user = await User.findOne({ email: req.body.email });
+		if (!user)
+			return res.status(401).send({ message: "Invalid Email or Password" });
+
+		const validPassword = await bcrypt.compare(
+			req.body.password,
+			user.password
+		);
+		if (!validPassword)
+			return res.status(401).send({ message: "Invalid Email or Password" });
+
+		const token = user.generateAuthToken();
+		res.status(200).send({ data: token, message: "logged in successfully" });
+	} catch (error) {
+		res.status(500).send({ message: "Internal Server Error" });
+	}
+});
+
+const validate = (data) => {
+	const schema = Joi.object({
+		email: Joi.string().email().required().label("Email"),
+		password: Joi.string().required().label("Password"),
+	});
+	return schema.validate(data);
+};
+
+module.exports = router;

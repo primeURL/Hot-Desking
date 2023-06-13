@@ -9,6 +9,7 @@ connectToMongo()
 app.use(bodyParser.json())
 app.use(cors())
 
-app.listen(8080,()=>console.log('Server started at port 8080'))
 
-app.use('/workout',routes)
+app.use("/user", routes);
+
+app.listen(8080,()=>console.log('Server started at port 8080'))
