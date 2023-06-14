@@ -12,7 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import env from '../env.json'
+import axios from 'axios'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,14 +34,34 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
+    
+  const [error, setError] = useState("");
+  const [msg, setMsg] = useState("");
+  const navigate = useNavigate()
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log('data',data);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    let body = {
+        firstName : data.get('firstName'),
+        lastName : data.get('lastName'),
+        email: data.get('email'),
+        password: data.get('password'),
+      }
+    try {
+        const url = env.backend_url_user + '/signup'
+        const {data:res} = await axios.post(url,body)
+        setMsg(res.message)
+        // console.log('resp:',response);
+        // navigate('/login')
+     } catch (error) {
+        if (
+            error.response &&
+            error.response.status >= 400 &&
+            error.response.status <= 500
+        ) {
+            setError(error.response.data.message);
+        }
+    }
   };
 
   return (
@@ -103,13 +126,10 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <FormControlLabel
-                  control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
-              </Grid>
+              
             </Grid>
+            {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>}
+            {msg && <div style={{color:'green',margin:'5px',padding:'5px'}}>{msg}</div>}
             <Button
               type="submit"
               fullWidth

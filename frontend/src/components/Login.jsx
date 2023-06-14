@@ -12,7 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import env from '../env.json'
+import axios from 'axios'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -31,13 +34,33 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
-  const handleSubmit = (event) => {
+const navigate = useNavigate()
+const [error, setError] = useState("");
+
+  const handleSubmit = async(event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const body = {
       email: data.get('email'),
       password: data.get('password'),
-    });
+    };
+    try {
+        const url = env.backend_url_user + '/login'
+        const response = await axios.post(url,body)
+        console.log('resp:',response);
+        localStorage.setItem('token',response.data.data)
+        // window.location = '/'
+        console.log('login successful');
+        navigate('/bookdesk')
+    } catch (error) {
+        if (
+            error.response &&
+            error.response.status >= 400 &&
+            error.response.status <= 500
+        ) {
+            setError(error.response.data.message);
+        }
+    }
   };
 
   return (
@@ -79,10 +102,8 @@ export default function Login() {
               id="password"
               autoComplete="current-password"
             />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
-            />
+            {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>}
+
             <Button
               type="submit"
               fullWidth

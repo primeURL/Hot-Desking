@@ -10,6 +10,9 @@ app.use(bodyParser.json())
 app.use(cors())
 
 
+app.get('/',(req,res)=>{
+    res.send('Inside index.js')
+})
 app.use("/user", routes);
 
-app.listen(8080,()=>console.log('Server started at port 8080'))
+app.listen(8000,()=>console.log('Server started at port 8000'))

@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
 	lastName: { type: String, required: true },
 	email: { type: String, required: true },
 	password: { type: String, required: true },
+    verified : {type:Boolean,default:false}
 });
 
 userSchema.methods.generateAuthToken = function () {
@@ -19,7 +20,7 @@ userSchema.methods.generateAuthToken = function () {
 
 const User = mongoose.model("user", userSchema);
 
-const validate = (data) => {
+const validateUser = (data) => {
 	const schema = Joi.object({
 		firstName: Joi.string().required().label("First Name"),
 		lastName: Joi.string().required().label("Last Name"),
@@ -29,4 +30,4 @@ const validate = (data) => {
 	return schema.validate(data);
 };
 
-module.exports = { User, validate };
+module.exports = { User, validateUser };

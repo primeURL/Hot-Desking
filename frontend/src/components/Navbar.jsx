@@ -12,14 +12,26 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { Outlet, Link } from "react-router-dom";
-const pages = ['Home', 'BookDesk', 'ContactUs','About'];
-const settings = ['Profile', 'SignUp'];
+import { Outlet,Link,useNavigate} from "react-router-dom";
+import { useEffect, } from 'react';
+let pages = ['Home', 'BookDesk', 'ContactUs','About'];
+let settings = ['Profile', 'Login'];
 
 function NavBar() {
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-
+  const navigate = useNavigate()
+  const token = localStorage.getItem('token')
+  useEffect(()=>{
+    if(token){
+      settings.push('LogOut')
+    }else{
+      let pos = settings.indexOf('LogOut')
+      if(pos>=0){
+        settings.splice(pos,1)
+      }
+    }
+  },[token])
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -27,12 +39,15 @@ function NavBar() {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = (page) => {
-    console.log('Hello....:',page);
+  const handleCloseNavMenu = () => {
     setAnchorElNav(null);
   };
 
-  const handleCloseUserMenu = () => {
+  const handleCloseUserMenu = (setting) => {
+    if(setting === 'LogOut'){
+      localStorage.removeItem('token')
+      navigate('/bookdesk')
+    }
     setAnchorElUser(null);
   };
 
@@ -149,7 +164,7 @@ function NavBar() {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={()=>handleCloseUserMenu(setting)}>
                   <Typography textAlign="center"><Link to={setting.toLowerCase()}>{setting}</Link></Typography>
                 </MenuItem>
               ))}
