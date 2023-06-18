@@ -1,9 +1,22 @@
-import React from 'react'
-import DeskCard from './Card'
-import { useEffect,useState } from 'react'
-import axios from 'axios'
-import env from '../env.json'
-import BasicDateCalendar from './Calender'
+import React from "react";
+import DeskCard from "./Card";
+import { useEffect, useState,createContext } from "react";
+import axios from "axios";
+import env from "../env.json";
+import BasicDateCalendar from "./Calender";
+import Rooms from "./Rooms";
+import "../styles/BookDesk.css";
+import {Link} from 'react-router-dom'
+import { Select, MenuItem, Button } from "@mui/material";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import SearchIcon from "@mui/icons-material/Search";
+import Paper from "@mui/material/Paper";
+
+export const BookDeskContext = createContext()
+
 const BookDesk = () => {
   // useEffect(()=>{
   //   const fetchData = async()=>{
@@ -13,64 +26,92 @@ const BookDesk = () => {
   //     } catch (error) {
   //       console.log(error);
   //     }
-     
+
   //   }
   //   fetchData()
   // },[])
-  const [roomData,setRoomData] = useState([])
-  const [startDate,setStartDate] = useState('')
-  const [endDate,setEndDate] = useState('')
-  const [time,setTime] = useState('')
-  const [location,setLocation] = useState('')
-  const handleSubmit = async(event) => {
-    event.preventDefault();
-    const body = {
-      startDate,
-      endDate,
-      time,
-      location
-    }
-    const response = await axios.post(env.backend_url_room,body)
-    console.log(response);
-    // console.log(body);
-  }
-  return (
-    <>
-      <div className="form" style={{width:'200px',backgroundColor:'lightgray'}}>
-        <form onSubmit={handleSubmit} style={{padding:'20px'}}>
-        <label>Starting Date</label>
-        <input 
-            type="date" 
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-          />
-          <br />
-          <label>Ending Date</label>
-        <input 
-            type="date" 
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-          />
-          <br />
-         <label>Enter Time</label>
-        <input 
-            type="time" 
-            value={time}
-            onChange={(e) => setTime(e.target.value)}
-          />
-          <br />
-          <label>Location</label>
-        <input 
-            type="text" 
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-          <br />
-        <input type="submit" />
-      </form>
-      </div>
-    </>
-  )
-}
+  let [roomData, setRoomData] = useState([]);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [time, setTime] = useState("");
+  const [location, setLocation] = useState('default');
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
 
-export default BookDesk
+  function dateConverter(str){
+    var date = new Date(str)
+    let mnth = ("0" + (date.getMonth()+1)).slice(-2)
+    let day  = ("0" + date.getDate()).slice(-2);
+    let year = date.getFullYear();
+    return `${day}-${mnth}-${year}`
+ }
+  function handleCheckIn(date){
+    setCheckIn(dateConverter(date))
+  }
+  function handleCheckOut(date){
+    setCheckOut(dateConverter(date))
+  }
+  return (<>
+      <div className="container">
+      <div className="sub-container-1">
+        <h6>It's time to Meet</h6>
+        <h1>Discover the Meeting Rooms </h1>
+        <h1>Best In The World</h1>
+        <h6>
+          When you Book Meeting Room,do you want to make sure your room has all
+          necessary aminients? Here is the solution
+        </h6>
+      </div>
+      <form style={{ padding: "20px" }}>
+        <div className="form sub-container-2">
+          <div className="location-container">
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              className="location-input"
+              label='Age'
+              value={location}
+              onChange={(e)=>setLocation(e.target.value)}
+            >
+              <MenuItem disabled value="default">
+                Select Location
+              </MenuItem>
+              <MenuItem value="Pune">Pune</MenuItem>
+              <MenuItem value="Mumbai">Mumbai</MenuItem>
+              <MenuItem value="Nashik">Nashik</MenuItem>
+            </Select>
+          </div>
+          <div className="dates-container">
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker"]}>
+                  <DatePicker label="Check In" onChange={handleCheckIn} className="date-picker" />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer components={["DatePicker"]}>
+                  <DatePicker label="Check Out" onChange={handleCheckOut} className="date-picker" />
+                </DemoContainer>
+              </LocalizationProvider>
+            </div>
+            <Button
+              className="search-btn"
+              variant="contained"
+              startIcon={<SearchIcon />}
+            >
+              <Link to={'/rooms/'+location+'/'+checkIn+'/'+checkOut}>Search</Link>
+            </Button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </>
+    
+    
+    
+  );
+};
+
+export default BookDesk;

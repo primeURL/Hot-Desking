@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet,Link,useNavigate} from "react-router-dom";
 import { useEffect, } from 'react';
-let pages = ['Home', 'BookDesk', 'ContactUs','About'];
+let pages = ['Home', 'BookDesk', 'ContactUs','About','CreateRooms'];
 let settings = ['Profile', 'Login'];
 
 function NavBar() {

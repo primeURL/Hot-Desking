@@ -78,7 +78,6 @@ router.post("/login", async (req, res) => {
 
 router.get("/:id/verify/:token/", async (req, res) => {
 	try {
-        debugger
 		const user = await User.findOne({ _id: req.params.id });
 		if (!user) return res.status(400).send({ message: "Invalid link" });
 

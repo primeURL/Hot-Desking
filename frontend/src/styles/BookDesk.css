@@ -1,0 +1,35 @@
+.container{
+    /* background-color: lightgray; */
+    text-align: center;
+    margin-top: 3rem;
+}
+.sub-container-2{
+    justify-content: center;
+    align-items: center;
+    background-color: #7effff;  
+    padding: 20px;
+    border-radius: 20px;
+    width: 70%;
+    margin: auto;
+}
+
+.dates-container{
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-btn{
+    border-radius: 50px !important;
+    width: 40%;
+}
+
+.location-input{
+    background-color: white;
+    border: none !important;
+    margin-block: 0em 1.5em;
+    width: 100% !important;
+}
+
+.date-picker{
+    background-color: white;
+}
