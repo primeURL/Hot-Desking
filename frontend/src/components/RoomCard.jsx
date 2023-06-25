@@ -1,37 +1,23 @@
 import React from "react";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { Link } from "react-router-dom";
-import Checkbox from "@mui/material/Checkbox";
-import env from "../env.json";
-import axios from "axios";
-import ofcThumbnail from "../assets/ofc-thumbnail.png";
-const RoomCard = ({ data }) => {
-  console.log("hello", data);
+import '../styles/roomcard.css'
+const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
 
   return (
     <>
-      <div></div>
-      <div
-        style={{ marginBottom: "15px", border: "2px solid orange", display: "flex" }}
-      >
-        <img src={data.image} alt="Room Thumbnail" style={{width:"500px"}}></img>
-        <div style={{ border: "2px solid red", width: "50%" }}>
-          <div>{data.roomName}</div>
-          <div>{data.roomSize}</div>
-          <Link to={"/singleroom/" + data._id}>
-            <button>BookNow - {data._id}</button>
-          </Link>
+      <div className="roomCardContainer">
+        <img src={data.image} alt="Room Thumbnail" className="roomCardImg"></img>
+        <div className="roomCardRightContainer">
+          <div>
+            <h3 className="roomCardRoomName"> Room-Name : {data.roomName}</h3>
+          </div>
+          <div>
+            <h3>Capacity : {data.roomSize}</h3>
+          </div>
+          { btnFlag && (  <Link to={`/singleroom/${checkIn}/${checkOut}/${data._id}`}>
+            <button className="roomCardbtn">BookNow</button>
+          </Link>) }
+        
         </div>
       </div>
     </>

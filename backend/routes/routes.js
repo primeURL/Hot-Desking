@@ -68,9 +68,8 @@ router.post("/login", async (req, res) => {
                 .status(400)
                 .send({ message: "An Email sent to your account please verify" });
         }
-
 		const token = user.generateAuthToken();
-		res.status(200).send({ data: token, message: "Logged in successfully" });
+		res.status(200).send({ data: token, userId:user._id, message: "Logged in successfully" });
 	} catch (error) {
 		res.status(500).send({ message: "Internal Server Error" });
 	}

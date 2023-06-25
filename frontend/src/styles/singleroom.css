@@ -1,3 +1,54 @@
+.srRoomName{
+  margin-left: 40px;
+  margin-top: 20px;
+}
+.srContainer{
+  margin: 40px;
+  /* border: 2px solid red; */
+  /* box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset; */
+  display: flex;
+}
+.srImg{
+  margin: 10px;
+  border-radius: 6px;
+  width: 500px;
+  height: 400px;
+}
+.srRoomDetails{
+  /* border: 2px solid green; */
+  box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
+  background-color: rgb(142, 225, 142);
+  margin-left: 400px;
+  padding: 10px;
+}
+.srRoomDetails p{
+  margin: 10px;
+}
+.srBookingDetails{
+  /* border: 2px solid coral; */
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 30px 60px -12px inset, rgba(0, 0, 0, 0.3) 0px 18px 36px -18px inset;
+
+}
+.srBookingDetailsHeading{
+  margin-left:5px ;
+  padding: 10px;
+}
+.srTimingInfo{
+  margin: 2px;
+  padding: 2px;
+}
+.srTimingInfo label{
+  margin: 5px;
+  padding: 5px;
+}
+.srTimingInfo input{
+  margin: 5px;
+  padding: 5px;
+}
+.srForm{
+  margin: 5px;
+  padding: 5px;
+}
 .form-inline {  
     display: flex;
     flex-flow: row wrap;
@@ -11,23 +62,24 @@
   .form-inline input {
     vertical-align: middle;
     margin: 5px 10px 5px 0;
-    padding: 10px;
+    padding: 5px;
     background-color: #fff;
     border: 1px solid #ddd;
   }
 
-  .button-section {
+  .sr-button-section {
     margin: 3%;
   }
-  .button {
+  .srbutton {
     padding: 10px 20px;
+    margin: 5px;
     background-color: dodgerblue;
     border: 1px solid #ddd;
     color: white;
     cursor: pointer;
   }
 
-  .button:hover {
+  .srbutton:hover {
     background-color: royalblue;
   }
 

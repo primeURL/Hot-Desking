@@ -1,0 +1,21 @@
+.nav-link{
+    text-decoration: none;
+    color: white;
+}
+
+.nav-link:hover{
+    text-decoration: underline;
+    color: coral;
+}
+
+.nav-bar{
+    background-color: black !important;
+}
+.nav-link-setting{
+    text-decoration: none;
+    /* color: white; */
+}
+.nav-link-setting:hover{
+    text-decoration: underline;
+    color: coral;
+}

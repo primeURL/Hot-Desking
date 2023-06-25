@@ -4,6 +4,7 @@ const cors = require('cors')
 const connectToMongo = require('./db')
 const routes = require('./routes/routes')
 const roomRoutes = require('./routes/roomRoutes')
+const bookedRoomRoutes = require('./routes/bookedRoomRoutes')
 require('dotenv').config()
 const app = express();
 connectToMongo()
@@ -17,5 +18,6 @@ app.get('/',(req,res)=>{
 })
 app.use("/user", routes);
 app.use("/room", roomRoutes);
+app.use("/bookedrooms", bookedRoomRoutes);
 
 app.listen(8000,()=>console.log('Server started at port 8000'))

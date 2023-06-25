@@ -13,8 +13,9 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet,Link,useNavigate} from "react-router-dom";
-import { useEffect, } from 'react';
-let pages = ['Home', 'BookDesk', 'ContactUs','About','CreateRooms'];
+import { useEffect, } from 'react'
+import '../styles/Navbar.css'
+let pages = ['Home', 'BookDesk','AboutUs','CreateRooms'];
 let settings = ['Profile', 'Login'];
 
 function NavBar() {
@@ -22,11 +23,19 @@ function NavBar() {
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
+  console.log('token',token);
   useEffect(()=>{
     if(token){
-      settings.push('LogOut')
+      if(!settings.includes('LogOut')){
+        settings.push('LogOut')
+        let pos = settings.indexOf('Login')
+        if(pos>=0){
+          settings.splice(pos,1)
+        }
+      }
     }else{
       let pos = settings.indexOf('LogOut')
+      console.log('pos',pos);
       if(pos>=0){
         settings.splice(pos,1)
       }
@@ -46,13 +55,15 @@ function NavBar() {
   const handleCloseUserMenu = (setting) => {
     if(setting === 'LogOut'){
       localStorage.removeItem('token')
-      navigate('/bookdesk')
+      // window.location.reload()
+      // navigate('/bookdesk')
+      window.location.href = '/bookdesk';
     }
     setAnchorElUser(null);
   };
 
   return (
-    <AppBar position="static">
+    <AppBar className='nav-bar' position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -129,16 +140,23 @@ function NavBar() {
           >
             LOGO
           </Typography>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' },textDecoration: 'none' }}>
             {pages.map((page) => (
               <Button
                 key={page}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
               >
-                <Link to={page.toLowerCase()}>{page}</Link>
+                <Link className='nav-link' to={page.toLowerCase()}>{page}</Link>
               </Button>
             ))}
+            {/* {pages.map((page) => (
+             <Link to={page.toLowerCase()}>
+                <button  key={page}
+                onClick={handleCloseNavMenu}
+                >{page}</button>
+             </Link>
+            ))} */}
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
@@ -165,7 +183,7 @@ function NavBar() {
             >
               {settings.map((setting) => (
                 <MenuItem key={setting} onClick={()=>handleCloseUserMenu(setting)}>
-                  <Typography textAlign="center"><Link to={setting.toLowerCase()}>{setting}</Link></Typography>
+                  <Typography textAlign="center"><Link className='nav-link-setting' to={setting.toLowerCase()}>{setting}</Link></Typography>
                 </MenuItem>
               ))}
             </Menu>
