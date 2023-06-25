@@ -9,6 +9,7 @@ import CreateRooms from "./screens/CreateRooms";
 import BookDesk from './screens/BookDesk'
 import Home from './screens/home'
 import About from "./screens/About";
+import Profile from "./screens/Profile";
 function App() {
 
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="home" element={<Home/>}></Route>
         <Route path="signup" element={<SingUp/>}></Route>
         <Route path="login" element={<Login/>}></Route>
+        <Route path="profile" element={<Profile/>}></Route>
         <Route path="createrooms" element={<CreateRooms/>}></Route>
         <Route path="aboutus" element={<About/>}></Route>
         <Route path="user/:id/verify/:token" element={<EmailVerify />} />

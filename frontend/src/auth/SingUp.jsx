@@ -16,6 +16,8 @@ import env from '../env.json'
 import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
+import Loader from '../components/Loader';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -34,9 +36,7 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function SignUp() {
-    
-  const [error, setError] = useState("");
-  const [msg, setMsg] = useState("");
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate()
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -48,29 +48,42 @@ export default function SignUp() {
         password: data.get('password'),
       }
     try {
+        setLoading(true)
         const url = env.backend_url_user + '/signup'
         const {data:res} = await axios.post(url,body)
-        setMsg(res.message)
-        // console.log('resp:',response);
-        // navigate('/login')
+        Swal.fire({
+          icon: 'success',
+          title: 'SignUp Successfull',
+          text: res.message,
+          footer: 'You will be Redirecting to Login Page.'
+        }).then(()=>{
+          navigate('/login')
+        })
+        setLoading(false)
      } catch (error) {
         if (
             error.response &&
             error.response.status >= 400 &&
             error.response.status <= 500
         ) {
-            setError(error.response.data.message);
+            Swal.fire({
+              icon: 'warning',
+              title: 'SignUp Failed',
+              text: error.response.data.message,
+            })
+            setLoading(false)
         }
     }
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+    {loading ? <Loader/> : (<ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 3,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -128,8 +141,8 @@ export default function SignUp() {
               </Grid>
               
             </Grid>
-            {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>}
-            {msg && <div style={{color:'green',margin:'5px',padding:'5px'}}>{msg}</div>}
+            {/* {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>} */}
+            {/* {msg && <div style={{color:'green',margin:'5px',padding:'5px'}}>{msg}</div>} */}
             <Button
               type="submit"
               fullWidth
@@ -149,6 +162,8 @@ export default function SignUp() {
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
-    </ThemeProvider>
+    </ThemeProvider>)}
+    </>
+    
   );
 }

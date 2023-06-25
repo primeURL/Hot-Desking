@@ -13,16 +13,18 @@ import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet,Link,useNavigate} from "react-router-dom";
-import { useEffect, } from 'react'
+import { useEffect,useState } from 'react'
 import '../styles/Navbar.css'
 let pages = ['Home', 'BookDesk','AboutUs','CreateRooms'];
 let settings = ['Profile', 'Login'];
 
 function NavBar() {
+  const [username,setUsername] = useState(null)
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
+  const userName = localStorage.getItem('userName')
   console.log('token',token);
   useEffect(()=>{
     if(token){
@@ -33,6 +35,7 @@ function NavBar() {
           settings.splice(pos,1)
         }
       }
+      setUsername(userName)
     }else{
       let pos = settings.indexOf('LogOut')
       console.log('pos',pos);
@@ -71,7 +74,7 @@ function NavBar() {
             variant="h6"
             noWrap
             component="a"
-            href="/"
+            href="/home"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -150,21 +153,15 @@ function NavBar() {
                 <Link className='nav-link' to={page.toLowerCase()}>{page}</Link>
               </Button>
             ))}
-            {/* {pages.map((page) => (
-             <Link to={page.toLowerCase()}>
-                <button  key={page}
-                onClick={handleCloseNavMenu}
-                >{page}</button>
-             </Link>
-            ))} */}
           </Box>
-
+          {username && <p style={{marginRight:'30px',color:'coral'}}>Welcome {userName}</p>}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Remy Sharp" style={{color:'blue'}} />
               </IconButton>
             </Tooltip>
+          
             <Menu
               sx={{ mt: '45px' }}
               id="menu-appbar"

@@ -3,8 +3,6 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -16,6 +14,8 @@ import env from '../env.json'
 import axios from 'axios'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'
+import Loader from '../components/Loader';
 function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
@@ -34,8 +34,8 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 export default function Login() {
+const [loading,setLoading] = useState(false)
 const navigate = useNavigate()
-const [error, setError] = useState("");
 
   const handleSubmit = async(event) => {
     event.preventDefault();
@@ -45,27 +45,40 @@ const [error, setError] = useState("");
       password: data.get('password'),
     };
     try {
+        setLoading(true)
         const url = env.backend_url_user + '/login'
         const response = await axios.post(url,body)
         console.log('resp:',response);
         localStorage.setItem('token',response.data.data)
         localStorage.setItem('userId',response.data.userId)
-        // window.location = '/'
-        console.log('login successful');
-        navigate('/bookdesk')
+        localStorage.setItem('userName',response.data.userName)
+        Swal.fire({
+          icon: 'success',
+          title: 'Login Successfull',
+          footer: 'You will be Redirecting to Home Page.'
+        }).then(()=>{
+          navigate('/home')
+        })
+        setLoading(false)
     } catch (error) {
         if (
             error.response &&
             error.response.status >= 400 &&
             error.response.status <= 500
         ) {
-            setError(error.response.data.message);
+            Swal.fire({
+              icon: 'info',
+              title: 'Login Failed',
+              text: error.response.data.message,
+            })
+            setLoading(false)
         }
     }
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
+    {loading ? <Loader/> : (<ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <Box
@@ -103,7 +116,7 @@ const [error, setError] = useState("");
               id="password"
               autoComplete="current-password"
             />
-            {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>}
+            {/* {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>} */}
 
             <Button
               type="submit"
@@ -129,6 +142,8 @@ const [error, setError] = useState("");
         </Box>
         <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
-    </ThemeProvider>
+    </ThemeProvider>) }
+    </>
+    
   );
 }
