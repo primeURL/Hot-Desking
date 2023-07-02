@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import '../styles/singleroom.css'
 import axios from 'axios'
 import env from '../env.json'
+import Swal from 'sweetalert2'
+import Loader from '../components/Loader';
+
 
 const SingleRoom = () => {
     const [data, setData] = useState([])
+    const navigate = useNavigate()
     const [capacity, setCapacity] = useState(0)
+    const [loading,setLoading] = useState(false)
     const [bookingStartTime, setBookingStartTime] = useState('')
     const [bookingEndTime, setBookingEndTime] = useState('')
     const [formValues, setFormValues] = useState([{ name: "", email: "" }])
@@ -62,57 +67,78 @@ const SingleRoom = () => {
             bookingEndTime,
             meetingUsers: formValues
         }
-        const response = await axios.post(env.backend_url_bookedroom, obj)
+        try {
+            setLoading(true)
+            const response = await axios.post(env.backend_url_bookedroom, obj)
+            Swal.fire({
+                icon: 'success',
+                title: 'Room Booked Successfully',
+                footer: 'You will be Redirecting to Profile Page.'
+              }).then(()=>{
+                navigate('/profile')
+              })
+            setLoading(false)
+        } catch (error) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Booking Failed',
+                text: error.response.data.message,
+              })
+            setLoading(false)
+        }
         console.log(response);
-        alert(JSON.stringify(formValues));
+        // alert(JSON.stringify(formValues));
     }
 
-    return (<div>
-        <h1 className='srRoomName'>Room Name : {data.roomName}</h1>
-        <div className='srContainer'>
-            <img src={data.image} alt="" className='srImg' />
+    return ( <>
+    {loading ? (<Loader/>) : (  <div className='srMainContainer'>
+    <h1 className='srRoomName'>Meeting Room: {data.roomName}</h1>
+    <div className='srContainer'>
+        <img src={data.image} alt="" className='srImg' />
+        <div>
+            <div className='srRoomDetails'> 
+                <p className='srRoomInfo'>CheckIn :<b> {param.checkIn}</b></p>
+                <p className='srRoomInfo'>CheckOut : <b>{param.checkOut}</b></p>
+                <p className='srRoomInfo'>Capacity :<b>{data.roomSize}</b> </p>
+            </div>
             <div>
-                <div className='srRoomDetails'> 
-                    <p>CheckIn :<b> {param.checkIn}</b></p>
-                    <p>CheckOut : <b>{param.checkOut}</b></p>
-                    <p>Capacity :<b>{data.roomSize}</b> </p>
-                </div>
-                <div>
-                    <div className='srBookingDetails'>
-                        <h4 className='srBookingDetailsHeading'>Booking Details</h4>
-                        <div className='srTimingInfo'>
-                            <label htmlFor="">Booking Start Time</label>
-                            <input type="time" value={bookingStartTime} onChange={(e) => setBookingStartTime(e.target.value)} /> <br />
-                            <label htmlFor="">Booking End Time</label>
-                            <input type="time" value={bookingEndTime} onChange={(e) => setBookingEndTime(e.target.value)} />
-                        </div>
-                        <form onSubmit={handleSubmit} className='srForm'>
-                           
-                            <h4>People Info</h4>
-                            {formValues.map((element, index) => (
-                                <div className="form-inline" key={index}>
-                                    <label>Name</label>
-                                    <input type="text" name="name" value={element.name || ""} onChange={e => handleChange(index, e)} />
-                                    <label>Email</label>
-                                    <input type="text" name="email" value={element.email || ""} onChange={e => handleChange(index, e)} />
-                                    {
-                                        index ?
-                                            <button type="button" className="button remove" onClick={() => removeFormFields(index)}>Remove</button>
-                                            : null
-                                    }
-                                </div>
-                            ))}
-                            <div className="sr-button-section">
-                                {capacity > 1 && <button className="srbutton add" type="button" onClick={() => addFormFields()}>Add</button>}
-                                <button className="srbutton submit" type="submit">Submit</button>
-                            </div>
-                        </form>
+                <div className='srBookingDetails'>
+                    <h4 className='srBookingDetailsHeading'>Booking Details</h4>
+                    <div className='srTimingInfo'>
+                        <label htmlFor="">Booking Start Time</label>
+                        <input type="time" value={bookingStartTime} onChange={(e) => setBookingStartTime(e.target.value)} /> <br />
+                        <label htmlFor="">Booking End Time</label>
+                        <input type="time" value={bookingEndTime} onChange={(e) => setBookingEndTime(e.target.value)} />
                     </div>
+                    <form onSubmit={handleSubmit} className='srForm'>
 
+
+                        <h5>People Info</h5>
+                        {formValues.map((element, index) => (
+                            <div className="form-inline" key={index}>
+                                <label>Name</label>
+                                <input type="text" name="name" value={element.name || ""} onChange={e => handleChange(index, e)} />
+                                <label>Email</label>
+                                <input type="text" name="email" value={element.email || ""} onChange={e => handleChange(index, e)} />
+                                {
+                                    index ?
+                                        <button type="button" className="button remove" onClick={() => removeFormFields(index)}>Remove</button>
+                                        : null
+                                }
+                            </div>
+                        ))}
+                        <div className="sr-button-section">
+                            {capacity > 1 && <button className="srbutton add" type="button" onClick={() => addFormFields()}>Add</button>}
+                            <button className="srbutton submit" type="submit">Submit</button>
+                        </div>
+                    </form>
                 </div>
+
             </div>
         </div>
     </div>
+</div>)}
+</>
     )
 }
 

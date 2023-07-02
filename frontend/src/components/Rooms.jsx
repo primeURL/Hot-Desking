@@ -80,15 +80,16 @@ export default function Rooms() {
   return (
     <>
     {
-      loading ? (<Loader/>) : (  <div style={{ display: "flex" }}>
-      <div style={{margin:'10px',border:'2px solid red',width:'20%'}}>
-        <div style={{padding:'15px'}}>
-          <Button variant="outlined" style={{color:'green'}} onClick={handleAvailability1}>Available Rooms</Button>
+      loading ? (<Loader/>) : (  
+      <div style={{ display: "flex" }}>
+        <div style={{borderRight:'4px solid blue',width:'17%'}}>
+          <div style={{marginLeft:'10px',marginTop:'15px',}}>
+            <Button variant="outlined" style={{color:'green'}} onClick={handleAvailability1}>Available Rooms</Button>
+          </div>
+          <div style={{marginLeft:'10px',marginTop:'15px'}}>
+            <Button variant="outlined" onClick={handleAvailability2}>Booked Rooms</Button>
+          </div>
         </div>
-        <div style={{padding:'15px'}}>
-          <Button variant="outlined" onClick={handleAvailability2}>Booked Rooms</Button>
-        </div>
-      </div>
       { availableRoomsFlag && (  <div className="roomsContainer-2">
         {rooms.map((d) => {
           return <RoomCard  data={d} checkIn={param.checkIn} checkOut={param.checkOut}  btnFlag={availableRoomsFlag}/>;

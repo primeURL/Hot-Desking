@@ -9,6 +9,7 @@ const bookedRoomSchema = new mongoose.Schema({
 	checkOut: { type: String, required: true },
 	bookingStartTime:{type:String,required:true},
 	bookingEndTime:{type:String,required:true},
+	status:{type:String,required:true,default:'Booked'},
 	meetingUsers:[{name:String,email:String}]
 });
 

@@ -1,11 +1,12 @@
 .nav-link{
     text-decoration: none;
     color: white;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 .nav-link:hover{
-    text-decoration: underline;
-    color: coral;
+    /* text-decoration: underline; */
+    color: coral !important;
 }
 
 .nav-bar{

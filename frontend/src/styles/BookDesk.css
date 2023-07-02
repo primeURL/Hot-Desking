@@ -1,4 +1,4 @@
-.container{
+.bD-container{
     /* background-color: lightgray; */
     text-align: center;
     /* margin-top: 10rem; */
@@ -17,7 +17,7 @@
   background-repeat: no-repeat;
   background-size: cover;
 }
-.sub-container-1{
+.bd-sub-container-1{
     margin-top: 6rem;
     color: white;
 }

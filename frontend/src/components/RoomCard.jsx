@@ -9,10 +9,10 @@ const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
         <img src={data.image} alt="Room Thumbnail" className="roomCardImg"></img>
         <div className="roomCardRightContainer">
           <div>
-            <h3 className="roomCardRoomName"> Room-Name : {data.roomName}</h3>
+            <p className="roomCardRoomName"> Room-Name : <b>{data.roomName}</b></p>
           </div>
           <div>
-            <h3>Capacity : {data.roomSize}</h3>
+            <p>Capacity : <b> {data.roomSize}</b></p>
           </div>
           { btnFlag && (  <Link to={`/singleroom/${checkIn}/${checkOut}/${data._id}`}>
             <button className="roomCardbtn">BookNow</button>

@@ -1,7 +1,7 @@
 const router = require("express").Router();
 const Room = require("../models/Room");
 
-
+// To get all Rooms
 router.get("/", async (req, res) => {
 	try {
         const resp = await Room.find({})

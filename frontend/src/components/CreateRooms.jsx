@@ -40,7 +40,7 @@ const CreateRooms = () => {
       };
   return (
     <div>
-        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 5 }}>
+        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 2 }}>
             <Grid container spacing={1}>
               <Grid item xs={4}>
                 <TextField

@@ -6,6 +6,43 @@ const Token = require('../models/Token')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
 
+//To get All Users
+router.get('/getAllUsers',async(req,res)=>{
+	try {
+		const response = await User.find({})
+		return res.status(200).send(response)
+	} catch (error) {
+		return res.status(500).send(error)
+	}
+})
+
+//To get Single Users
+router.get('/getSingleUsers/:userId',async(req,res)=>{
+	try {
+		const response = await User.findOne({_id:req.params.userId})
+		let obj = {
+			firstName : response.firstName,
+			lastName : response.lastName,
+			email : response.email,
+			isAdmin : response.isAdmin,
+			EmailVerified : response.verified
+
+		}
+		return res.status(200).send(obj)
+	} catch (error) {
+		return res.status(500).send(error)
+	}
+})
+//To get is User Admin
+router.get('/checkAdmin/:userId',async(req,res)=>{
+	try {
+		const response = await User.findOne({_id:req.params.userId})
+		console.log('response',response.isAdmin);
+		return res.status(200).send(response.isAdmin)
+	} catch (error) {
+		return res.status(500).send(error)
+	}
+})
 router.post("/signup", async (req, res) => {
 	try {
 		// const { error } = validateUser(req.body);

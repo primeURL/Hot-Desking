@@ -14,9 +14,10 @@ import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet,Link,useNavigate} from "react-router-dom";
 import { useEffect,useState } from 'react'
+import logo from '../assets/logo.png'
 import '../styles/Navbar.css'
-let pages = ['Home', 'BookDesk','AboutUs','CreateRooms'];
-let settings = ['Profile', 'Login'];
+let pages = ['Home', 'BookDesk','AboutUs'];
+let settings = ['Profile', 'Login','Admin'];
 
 function NavBar() {
   const [username,setUsername] = useState(null)
@@ -59,8 +60,8 @@ function NavBar() {
     if(setting === 'LogOut'){
       localStorage.removeItem('token')
       // window.location.reload()
-      // navigate('/bookdesk')
-      window.location.href = '/bookdesk';
+      // navigate('/home')
+      window.location.href = '/home';
     }
     setAnchorElUser(null);
   };
@@ -69,7 +70,7 @@ function NavBar() {
     <AppBar className='nav-bar' position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
+          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
           <Typography
             variant="h6"
             noWrap
@@ -85,7 +86,7 @@ function NavBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            <img src={logo} alt="" style={{width:'30px',borderRadius:'10px'}} />
           </Typography>
 
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -154,7 +155,7 @@ function NavBar() {
               </Button>
             ))}
           </Box>
-          {username && <p style={{marginRight:'30px',color:'coral'}}>Welcome {userName}</p>}
+          {username && <p style={{marginRight:'30px',color:'coral',marginTop:'15px'}}><b>Welcome {userName}</b></p>}
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
