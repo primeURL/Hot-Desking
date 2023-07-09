@@ -6,15 +6,16 @@ import axios from 'axios'
 import env from '../env.json'
 import Swal from 'sweetalert2'
 import Loader from '../components/Loader';
-
+import StripeCheckout from 'react-stripe-checkout';
 
 const SingleRoom = () => {
     const [data, setData] = useState([])
     const navigate = useNavigate()
     const [capacity, setCapacity] = useState(0)
     const [loading,setLoading] = useState(false)
-    const [bookingStartTime, setBookingStartTime] = useState('')
-    const [bookingEndTime, setBookingEndTime] = useState('')
+    const [totalAmount,setTotalAmount] = useState(null)
+    const [bookingStartTime, setBookingStartTime] = useState(null)
+    const [bookingEndTime, setBookingEndTime] = useState(null)
     const [formValues, setFormValues] = useState([{ name: "", email: "" }])
     const param = useParams();
     const userId = localStorage.getItem('userId')
@@ -56,8 +57,82 @@ const SingleRoom = () => {
 
     let handleSubmit = async (event) => {
         event.preventDefault();
-        const obj = {
+        // const obj = {
+        //     userId,
+        //     roomId: param.id,
+        //     roomName: data.roomName,
+        //     roomSize: data.roomSize,
+        //     checkIn: param.checkIn,
+        //     checkOut: param.checkOut,
+        //     bookingStartTime,
+        //     bookingEndTime,
+        //     meetingUsers: formValues
+        // }
+        // try {
+        //     setLoading(true)
+        //     const response = await axios.post(env.backend_url_bookedroom, obj)
+        //     Swal.fire({
+        //         icon: 'success',
+        //         title: 'Room Booked Successfully',
+        //         footer: 'You will be Redirecting to Profile Page.'
+        //       }).then(()=>{
+        //         navigate('/profile')
+        //       })
+        //     setLoading(false)
+        // } catch (error) {
+        //     Swal.fire({
+        //         icon: 'error',
+        //         title: 'Booking Failed',
+        //         text: error.response.data.message,
+        //       })
+        //     setLoading(false)
+        // }
+        // console.log(response);
+        // alert(JSON.stringify(formValues));
+    }
+    function calulateTotalAmount(){
+        console.log(bookingStartTime);
+        console.log(bookingEndTime);
+        let totalHrs = calulateTotalHrs(bookingStartTime,bookingEndTime)
+        console.log('totalHrs',totalHrs);
+        let tA = Number(data.rentPerHr) * Number(totalHrs)
+        console.log(tA);
+        setTotalAmount(tA)
+    }
+    function calulateTotalHrs(startTime,endTime){
+        const startParts = startTime.split(":");
+        const endParts = endTime.split(":");
+
+        // Convert the hours and minutes to numbers
+        const startHour = parseInt(startParts[0], 10);
+        const startMinute = parseInt(startParts[1], 10);
+        const endHour = parseInt(endParts[0], 10);
+        const endMinute = parseInt(endParts[1], 10);
+
+        // Calculate the difference in hours and minutes
+        let hourDiff = endHour - startHour;
+        let minuteDiff = endMinute - startMinute;
+
+        // Adjust for negative minute difference and borrow an hour
+        if (minuteDiff < 0) {
+            hourDiff--;
+            minuteDiff += 60;
+        }
+
+        // Convert the minute difference to decimal hours
+        const minuteDecimal = minuteDiff / 60;
+
+        // Calculate the total hours
+        let totalHours = hourDiff + minuteDecimal
+        totalHours = Math.ceil(totalHours);
+        return totalHours;
+
+    }
+    async function onToken(token){
+        console.log(token);
+         const obj = {
             userId,
+            totalAmount,
             roomId: param.id,
             roomName: data.roomName,
             roomSize: data.roomSize,
@@ -65,8 +140,10 @@ const SingleRoom = () => {
             checkOut: param.checkOut,
             bookingStartTime,
             bookingEndTime,
-            meetingUsers: formValues
+            meetingUsers: formValues,
+            token
         }
+        console.log(obj);
         try {
             setLoading(true)
             const response = await axios.post(env.backend_url_bookedroom, obj)
@@ -86,10 +163,7 @@ const SingleRoom = () => {
               })
             setLoading(false)
         }
-        console.log(response);
-        // alert(JSON.stringify(formValues));
     }
-
     return ( <>
     {loading ? (<Loader/>) : (  <div className='srMainContainer'>
     <h1 className='srRoomName'>Meeting Room: {data.roomName}</h1>
@@ -100,6 +174,7 @@ const SingleRoom = () => {
                 <p className='srRoomInfo'>CheckIn :<b> {param.checkIn}</b></p>
                 <p className='srRoomInfo'>CheckOut : <b>{param.checkOut}</b></p>
                 <p className='srRoomInfo'>Capacity :<b>{data.roomSize}</b> </p>
+                <p className='srRoomInfo'>Rent Per Hour : <b> {data.rentPerHr}</b> </p>
             </div>
             <div>
                 <div className='srBookingDetails'>
@@ -110,6 +185,7 @@ const SingleRoom = () => {
                         <label htmlFor="">Booking End Time</label>
                         <input type="time" value={bookingEndTime} onChange={(e) => setBookingEndTime(e.target.value)} />
                     </div>
+                    <button className='srTotalAmount' onClick={calulateTotalAmount} disabled={!bookingStartTime && !bookingEndTime}>Calculate Total Amount <b>{totalAmount}</b></button>
                     <form onSubmit={handleSubmit} className='srForm'>
 
 
@@ -129,7 +205,13 @@ const SingleRoom = () => {
                         ))}
                         <div className="sr-button-section">
                             {capacity > 1 && <button className="srbutton add" type="button" onClick={() => addFormFields()}>Add</button>}
-                            <button className="srbutton submit" type="submit">Submit</button>
+                            <StripeCheckout
+        token={onToken}
+        currency='INR'
+        amount={totalAmount * 100}
+        stripeKey={import.meta.env.VITE_APP_PUBLISH_KEY}
+    > <button className="srbutton submit" type="submit">Pay Now</button></StripeCheckout>
+                           
                         </div>
                     </form>
                 </div>
@@ -137,6 +219,7 @@ const SingleRoom = () => {
             </div>
         </div>
     </div>
+   
 </div>)}
 </>
     )

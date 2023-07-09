@@ -14,6 +14,9 @@ const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
           <div>
             <p>Capacity : <b> {data.roomSize}</b></p>
           </div>
+          <div>
+            <p>Rent Per Hour : <b> {data.rentPerHr}</b></p>
+          </div>
           { btnFlag && (  <Link to={`/singleroom/${checkIn}/${checkOut}/${data._id}`}>
             <button className="roomCardbtn">BookNow</button>
           </Link>) }

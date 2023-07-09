@@ -11,7 +11,7 @@ import About from "./screens/About";
 import Profile from "./screens/Profile";
 import Admin from './screens/Admin'
 function App() {
-
+  console.log(import.meta.env.VITE_APP_PUBLISH_KEY);
   return (
    <>
     <NavBar/>

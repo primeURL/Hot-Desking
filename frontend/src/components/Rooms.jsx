@@ -24,6 +24,7 @@ export default function Rooms() {
       try {
         setLoading(true)
         const { data } = await axios.get(url);
+        console.log('utk',data);
         setRooms(data);
         duplicateRooms = data
         setDuplicateRooms(duplicateRooms)

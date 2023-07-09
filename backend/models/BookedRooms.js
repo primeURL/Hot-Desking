@@ -7,6 +7,7 @@ const bookedRoomSchema = new mongoose.Schema({
     roomSize : {type:Number,required:true},
 	checkIn: { type: String, required: true },
 	checkOut: { type: String, required: true },
+	totalAmount: { type: String, required: true },
 	bookingStartTime:{type:String,required:true},
 	bookingEndTime:{type:String,required:true},
 	status:{type:String,required:true,default:'Booked'},

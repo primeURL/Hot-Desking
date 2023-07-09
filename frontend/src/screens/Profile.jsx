@@ -8,9 +8,9 @@ import axios from 'axios'
 import env from '../env.json'
 import Swal from 'sweetalert2'
 import { Divider, Space, Tag } from 'antd';
-
 import Loader from '../components/Loader';
 const Profile = () => {
+  
   const [userDetails,setUserDetails] = useState({})
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
@@ -53,22 +53,27 @@ export default Profile
 
 
 export function MyBooking() {
+  const [loading,setLoading] = useState(false)
   const userId = localStorage.getItem('userId')
   const [rooms, setRooms] = useState([])
   useEffect(() => {
     const getAllBookings = async () => {
       try {
+        setLoading(true)
         const { data } = await axios.post(`${env.backend_url_bookedroom}/getBookingsOfUser`, { userId })
         console.log(data);
         setRooms(data)
+        setLoading(false)
       } catch (error) {
         console.log(error);
+        setLoading(false)
       }
     }
     getAllBookings()
   }, [])
   async function cancelBooking(bookingId, roomId) {
     try {
+      setLoading(true)
       const { data } = await axios.post(`${env.backend_url_bookedroom}/cancelBooking`, { bookingId, roomId })
       console.log(data);
       Swal.fire({
@@ -76,9 +81,11 @@ export function MyBooking() {
         title: 'Cancelled Successfull',
         text: data
       })
-      window.location.reload()
+      setLoading(false)
+      // window.location.reload()
     } catch (error) {
       console.log(error);
+      setLoading(false)
     }
   }
   function isCancellationEligible(checkIn, checkOut, startTime) {
@@ -91,7 +98,8 @@ export function MyBooking() {
     return currentTime < cancellationTime.getTime();
   }
   return (
-    <div>
+    <>
+     {loading ? (<Loader/>)  :( <div>
       <div className="row">
         <div className="col-md-6">
           {rooms.toReversed().map((room) => {
@@ -99,6 +107,7 @@ export function MyBooking() {
               <div className='pBookingsContainer' >
                 <div className='pBookingsContent' key={room._id}>
                   <h3 className='pBookingHeading'>Booked Room : {room.roomName}</h3>
+                  <p><b>Total Amount : </b>{room.totalAmount}</p>
                   <p><b>Room Capacity : </b>{room.roomSize}</p>
                   <p><b>Check In : </b>{room.checkIn}</p>
                   <p><b>Check Out : </b>{room.checkOut}</p>
@@ -120,6 +129,8 @@ export function MyBooking() {
           })}
         </div>
       </div>
-    </div>
+    </div>)}</>
+   
+   
   )
 }

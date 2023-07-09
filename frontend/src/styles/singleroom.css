@@ -41,6 +41,14 @@
   /* font-weight: bold; */
   /* color: white; */
 }
+.srTotalAmount{
+  margin-left: 130px;
+  width: 300px;
+  border: 1px solid red;
+  background-color: lightgreen;
+  border-radius: 10px;
+  text-align: center;
+}
 .srRoomDetails p{
   margin: 10px;
 }

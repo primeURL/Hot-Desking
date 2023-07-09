@@ -1,7 +1,8 @@
 const router = require("express").Router();
 const Room = require("../models/Room");
 const BookedRoom =require('../models/BookedRooms')
-
+const {v4 : uuidv4} = require('uuid')
+const stripe = require('stripe')('sk_test_51NRnDBSAWFoAzQ9giqCrAl1VLo7QxdjN1kmjwlqdlNLBRpEgOvXrsU6wIH2IDMEe1RxzqfQjeFj5cyJNjSIQuNYJ00sFCnrPoU')
 // Get All Bookings for Admin Panel
 router.get('/getAllBookings',async(req,res)=>{
     try {
@@ -13,22 +14,36 @@ router.get('/getAllBookings',async(req,res)=>{
 })
 // Booking Rooms Route
 router.post("/", async (req, res) => {
-    
-	try {
-        console.log(req.body);
-        const newBooking = new BookedRoom(req.body)
-        console.log('nB',newBooking);
-        const room = await Room.findById({_id:req.body.roomId})
-        room.currentBooking.push({fromDate:req.body.checkIn,toDate:req.body.checkOut,bookingStartTime:req.body.bookingStartTime,bookingEndTime:req.body.bookingEndTime,bookingId:newBooking._id})
-        room.isBooked = true
-        await room.save()
-        console.log('room',room);
-        await newBooking.save()
-        // console.log('resp',resp);
-        res.status(200).send({message:'Room Booked Successfully'})
+    console.log(req.body);
+    const {token,totalAmount} = req.body
+    try {
+        const customer = await stripe.customers.create({
+            email : token.email,
+            source : token.id
+        })
+        const payment = await stripe.paymentIntents.create({
+            amount : totalAmount * 100,
+            customer : customer.id,
+            currency : 'inr',
+            receipt_email : token.email
+        },{
+            idempotencyKey : uuidv4()
+        })
+        if(payment){
+            const newBooking = new BookedRoom(req.body)
+            console.log('nB',newBooking);
+            const room = await Room.findById({_id:req.body.roomId})
+            room.currentBooking.push({fromDate:req.body.checkIn,toDate:req.body.checkOut,bookingStartTime:req.body.bookingStartTime,bookingEndTime:req.body.bookingEndTime,bookingId:newBooking._id})
+            room.isBooked = true
+            await room.save()
+            console.log('room',room);
+            await newBooking.save()
+            // console.log('resp',resp);
+            return res.status(200).send({message:'Payment Done, Room Booked Successfully'})
+        }
     } catch (error) {
-        console.log('errr',error);
-        res.status(500).send(error)
+        console.log(error);
+        return res.status(500).send(error)
     }
 });
 
