@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useParams,useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import '../styles/singleroom.css'
 import axios from 'axios'
@@ -12,8 +12,8 @@ const SingleRoom = () => {
     const [data, setData] = useState([])
     const navigate = useNavigate()
     const [capacity, setCapacity] = useState(0)
-    const [loading,setLoading] = useState(false)
-    const [totalAmount,setTotalAmount] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [totalAmount, setTotalAmount] = useState(null)
     const [bookingStartTime, setBookingStartTime] = useState(null)
     const [bookingEndTime, setBookingEndTime] = useState(null)
     const [formValues, setFormValues] = useState([{ name: "", email: "" }])
@@ -90,16 +90,16 @@ const SingleRoom = () => {
         // console.log(response);
         // alert(JSON.stringify(formValues));
     }
-    function calulateTotalAmount(){
+    function calulateTotalAmount() {
         console.log(bookingStartTime);
         console.log(bookingEndTime);
-        let totalHrs = calulateTotalHrs(bookingStartTime,bookingEndTime)
-        console.log('totalHrs',totalHrs);
+        let totalHrs = calulateTotalHrs(bookingStartTime, bookingEndTime)
+        console.log('totalHrs', totalHrs);
         let tA = Number(data.rentPerHr) * Number(totalHrs)
         console.log(tA);
         setTotalAmount(tA)
     }
-    function calulateTotalHrs(startTime,endTime){
+    function calulateTotalHrs(startTime, endTime) {
         const startParts = startTime.split(":");
         const endParts = endTime.split(":");
 
@@ -128,9 +128,9 @@ const SingleRoom = () => {
         return totalHours;
 
     }
-    async function onToken(token){
+    async function onToken(token) {
         console.log(token);
-         const obj = {
+        const obj = {
             userId,
             totalAmount,
             roomId: param.id,
@@ -151,77 +151,77 @@ const SingleRoom = () => {
                 icon: 'success',
                 title: 'Room Booked Successfully',
                 footer: 'You will be Redirecting to Profile Page.'
-              }).then(()=>{
+            }).then(() => {
                 navigate('/profile')
-              })
+            })
             setLoading(false)
         } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'Booking Failed',
                 text: error.response.data.message,
-              })
+            })
             setLoading(false)
         }
     }
-    return ( <>
-    {loading ? (<Loader/>) : (  <div className='srMainContainer'>
-    <h1 className='srRoomName'>Meeting Room: {data.roomName}</h1>
-    <div className='srContainer'>
-        <img src={data.image} alt="" className='srImg' />
-        <div>
-            <div className='srRoomDetails'> 
-                <p className='srRoomInfo'>CheckIn :<b> {param.checkIn}</b></p>
-                <p className='srRoomInfo'>CheckOut : <b>{param.checkOut}</b></p>
-                <p className='srRoomInfo'>Capacity :<b>{data.roomSize}</b> </p>
-                <p className='srRoomInfo'>Rent Per Hour : <b> {data.rentPerHr}</b> </p>
-            </div>
-            <div>
-                <div className='srBookingDetails'>
-                    <h4 className='srBookingDetailsHeading'>Booking Details</h4>
-                    <div className='srTimingInfo'>
-                        <label htmlFor="">Booking Start Time</label>
-                        <input type="time" value={bookingStartTime} onChange={(e) => setBookingStartTime(e.target.value)} /> <br />
-                        <label htmlFor="">Booking End Time</label>
-                        <input type="time" value={bookingEndTime} onChange={(e) => setBookingEndTime(e.target.value)} />
+    return (<>
+        {loading ? (<Loader />) : (<div className='srMainContainer'>
+            <h1 className='srRoomName'>Meeting Room: {data.roomName}</h1>
+            <div className='srContainer'>
+                <img src={data.image} alt="" className='srImg' />
+                <div>
+                    <div className='srRoomDetails'>
+                        <p className='srRoomInfo'>CheckIn :<b> {param.checkIn}</b></p>
+                        <p className='srRoomInfo'>CheckOut : <b>{param.checkOut}</b></p>
+                        <p className='srRoomInfo'>Capacity :<b>{data.roomSize}</b> </p>
+                        <p className='srRoomInfo'>Rent Per Hour : <b> {data.rentPerHr}</b> </p>
                     </div>
-                    <button className='srTotalAmount' onClick={calulateTotalAmount} disabled={!bookingStartTime && !bookingEndTime}>Calculate Total Amount <b>{totalAmount}</b></button>
-                    <form onSubmit={handleSubmit} className='srForm'>
-
-
-                        <h5>People Info</h5>
-                        {formValues.map((element, index) => (
-                            <div className="form-inline" key={index}>
-                                <label>Name</label>
-                                <input type="text" name="name" value={element.name || ""} onChange={e => handleChange(index, e)} />
-                                <label>Email</label>
-                                <input type="text" name="email" value={element.email || ""} onChange={e => handleChange(index, e)} />
-                                {
-                                    index ?
-                                        <button type="button" className="button remove" onClick={() => removeFormFields(index)}>Remove</button>
-                                        : null
-                                }
+                    <div>
+                        <div className='srBookingDetails'>
+                            <h4 className='srBookingDetailsHeading'>Booking Details</h4>
+                            <div className='srTimingInfo'>
+                                <label htmlFor="">Booking Start Time</label>
+                                <input type="time" value={bookingStartTime} onChange={(e) => setBookingStartTime(e.target.value)} /> <br />
+                                <label htmlFor="">Booking End Time</label>
+                                <input type="time" value={bookingEndTime} onChange={(e) => setBookingEndTime(e.target.value)} />
                             </div>
-                        ))}
-                        <div className="sr-button-section">
-                            {capacity > 1 && <button className="srbutton add" type="button" onClick={() => addFormFields()}>Add</button>}
-                            <StripeCheckout
-        token={onToken}
-        currency='INR'
-        amount={totalAmount * 100}
-        stripeKey={import.meta.env.VITE_APP_PUBLISH_KEY}
-    > <button className="srbutton submit" type="submit">Pay Now</button></StripeCheckout>
-                           
-                        </div>
-                    </form>
-                </div>
+                            <button className='srTotalAmount' onClick={calulateTotalAmount} disabled={!bookingStartTime && !bookingEndTime}>Calculate Total Amount <b>{totalAmount}</b></button>
+                            <form onSubmit={handleSubmit} className='srForm'>
 
+
+                                <h5>People Info</h5>
+                                {formValues.map((element, index) => (
+                                    <div className="form-inline" key={index}>
+                                        <label>Name</label>
+                                        <input type="text" name="name" value={element.name || ""} onChange={e => handleChange(index, e)} />
+                                        <label>Email</label>
+                                        <input type="text" name="email" value={element.email || ""} onChange={e => handleChange(index, e)} />
+                                        {
+                                            index ?
+                                                <button type="button" className="button remove" onClick={() => removeFormFields(index)}>Remove</button>
+                                                : null
+                                        }
+                                    </div>
+                                ))}
+                                <div className="sr-button-section">
+                                    {capacity > 1 && <button className="srbutton add" type="button" onClick={() => addFormFields()}>Add</button>}
+                                    <StripeCheckout
+                                        token={onToken}
+                                        currency='INR'
+                                        amount={totalAmount * 100}
+                                        stripeKey={import.meta.env.VITE_APP_PUBLISH_KEY}
+                                    > <button className="srbutton submit" type="submit">Pay Now</button></StripeCheckout>
+
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-   
-</div>)}
-</>
+
+        </div>)}
+    </>
     )
 }
 

@@ -10,8 +10,8 @@ import Swal from 'sweetalert2'
 import { Divider, Space, Tag } from 'antd';
 import Loader from '../components/Loader';
 const Profile = () => {
-  
-  const [userDetails,setUserDetails] = useState({})
+
+  const [userDetails, setUserDetails] = useState({})
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
   const name = localStorage.getItem('userName')
@@ -20,14 +20,14 @@ const Profile = () => {
     if (!token) {
       navigate('/login')
     }
-    async function getUserDetails(){
-        try {
-          const {data} = await axios.get(`${env.backend_url_user}/getSingleUsers/${userId}`)
-          console.log(data);
-          setUserDetails(data)
-        } catch (error) {
-          console.log(error);
-        }
+    async function getUserDetails() {
+      try {
+        const { data } = await axios.get(`${env.backend_url_user}/getSingleUsers/${userId}`)
+        console.log(data);
+        setUserDetails(data)
+      } catch (error) {
+        console.log(error);
+      }
     }
     getUserDetails()
   }, [])
@@ -53,7 +53,7 @@ export default Profile
 
 
 export function MyBooking() {
-  const [loading,setLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const userId = localStorage.getItem('userId')
   const [rooms, setRooms] = useState([])
   useEffect(() => {
@@ -99,38 +99,36 @@ export function MyBooking() {
   }
   return (
     <>
-     {loading ? (<Loader/>)  :( <div>
-      <div className="row">
-        <div className="col-md-6">
-          {rooms.toReversed().map((room) => {
-            return (
-              <div className='pBookingsContainer' >
-                <div className='pBookingsContent' key={room._id}>
-                  <h3 className='pBookingHeading'>Booked Room : {room.roomName}</h3>
-                  <p><b>Total Amount : </b>{room.totalAmount}</p>
-                  <p><b>Room Capacity : </b>{room.roomSize}</p>
-                  <p><b>Check In : </b>{room.checkIn}</p>
-                  <p><b>Check Out : </b>{room.checkOut}</p>
-                  <p><b>Start Time : </b>{room.bookingStartTime}</p>
-                  <p><b>End Time : </b>{room.bookingEndTime}</p>
-                  <p><b>Status : </b>{room.status === 'Booked' ? <Tag bordered={false} color="success"> CONFIRMED</Tag> : <Tag bordered={false} color="error">CANCELLED
-      </Tag> }</p>
-                  {
-                    isCancellationEligible(room.checkIn, room.checkOut, room.bookingStartTime) ?
-                     (room.status !== 'cancelled' && (<button className='pBookingsBtn' onClick={() => cancelBooking(room._id, room.roomId)}>Cancel Booking</button>))
-                    :(<button className='pBookingsBtnDisabled' disabled={true}>Cancel Booking</button>)
+      {loading ? (<Loader />) : (<div>
+        <div className="row">
+          <div className="col-md-6">
+            {rooms.toReversed().map((room) => {
+              return (
+                <div className='pBookingsContainer' >
+                  <div className='pBookingsContent' key={room._id}>
+                    <h3 className='pBookingHeading'>Booked Room : {room.roomName}</h3>
+                    <p><b>Total Amount : </b>{room.totalAmount}</p>
+                    <p><b>Room Capacity : </b>{room.roomSize}</p>
+                    <p><b>Check In : </b>{room.checkIn}</p>
+                    <p><b>Check Out : </b>{room.checkOut}</p>
+                    <p><b>Start Time : </b>{room.bookingStartTime}</p>
+                    <p><b>End Time : </b>{room.bookingEndTime}</p>
+                    <p><b>Status : </b>{room.status === 'Booked' ? <Tag bordered={false} color="success"> CONFIRMED</Tag> : <Tag bordered={false} color="error">CANCELLED
+                    </Tag>}</p>
+                    {
+                      isCancellationEligible(room.checkIn, room.checkOut, room.bookingStartTime) ?
+                        (room.status !== 'cancelled' && (<button className='pBookingsBtn' onClick={() => cancelBooking(room._id, room.roomId)}>Cancel Booking</button>))
+                        : (<button className='pBookingsBtnDisabled' disabled={true}>Cancel Booking</button>)
 
-                  }
-
-
+                    }
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+          </div>
         </div>
-      </div>
-    </div>)}</>
-   
-   
+      </div>)}</>
+
+
   )
 }
