@@ -5,27 +5,27 @@ const Joi = require("joi");
 const Token = require('../models/Token')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
-const Redis = require('redis')
-const redisClient = Redis.createClient()
+// const Redis = require('redis')
+// const redisClient = Redis.createClient()
 const EXPIRATION = 3600
-async function RedisConnect() {
-    await redisClient.connect();
-}
-RedisConnect()
+// async function RedisConnect() {
+//     await redisClient.connect();
+// }
+// RedisConnect()
 
 //To get All Users
 router.get('/getAllUsers',async(req,res)=>{
 	try {
-		const users = await redisClient.get("getAllUsers")
-        if (users !== null) {
-            console.log('Cache Hit');
-            return res.status(200).send(JSON.parse(users))
-        } else {
-            console.log('Cache Miss');
+		// const users = await redisClient.get("getAllUsers")
+        // if (users !== null) {
+        //     console.log('Cache Hit');
+        //     return res.status(200).send(JSON.parse(users))
+        // } else {
+        //     console.log('Cache Miss');
             const resp = await User.find({})
-            redisClient.setEx('getAllUsers', EXPIRATION, JSON.stringify(resp))
+            // redisClient.setEx('getAllUsers', EXPIRATION, JSON.stringify(resp))
             return res.status(200).send(resp)
-        }
+        // }
 	} catch (error) {
 		return res.status(500).send(error)
 	}
@@ -34,12 +34,12 @@ router.get('/getAllUsers',async(req,res)=>{
 //To get Single Users
 router.get('/getSingleUsers/:userId',async(req,res)=>{
 	try {
-		const user = await redisClient.get("getSingleUsers")
-        if (user !== null) {
-            console.log('Cache Hit');
-            return res.status(200).send(JSON.parse(user))
-        } else {
-            console.log('Cache Miss');
+		// const user = await redisClient.get("getSingleUsers")
+        // if (user !== null) {
+        //     console.log('Cache Hit');
+        //     return res.status(200).send(JSON.parse(user))
+        // } else {
+        //     console.log('Cache Miss');
             const response = await User.findOne({_id:req.params.userId})
 			let obj = {
 				firstName : response.firstName,
@@ -48,9 +48,9 @@ router.get('/getSingleUsers/:userId',async(req,res)=>{
 				isAdmin : response.isAdmin,
 				EmailVerified : response.verified
 			}
-            redisClient.setEx('getSingleUsers',EXPIRATION,JSON.stringify(obj))
+            // redisClient.setEx('getSingleUsers',EXPIRATION,JSON.stringify(obj))
             return res.status(200).send(obj)
-        }
+        // }
 	} catch (error) {
 		return res.status(500).send(error)
 	}

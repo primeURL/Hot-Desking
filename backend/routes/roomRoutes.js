@@ -1,27 +1,27 @@
 const router = require("express").Router();
 const Room = require("../models/Room");
-const Redis = require('redis')
-const redisClient = Redis.createClient()
+// const Redis = require('redis')
+// const redisClient = Redis.createClient()
 const EXPIRATION = 3600
-async function RedisConnect() {
-    await redisClient.connect();
-    console.log('Redis-Cache Connected');
-}
-RedisConnect()
+// async function RedisConnect() {
+//     await redisClient.connect();
+//     console.log('Redis-Cache Connected');
+// }
+// RedisConnect()
 
 // To get all Rooms
 router.get("/", async (req, res) => {
     try {
-        const room = await redisClient.get("allRooms")
-        if (room != null) {
-            console.log('Cache Hit');
-            return res.status(200).send(JSON.parse(room))
-        } else {
-            console.log('Cache Miss');
+        // const room = await redisClient.get("allRooms")
+        // if (room != null) {
+        //     console.log('Cache Hit');
+        //     return res.status(200).send(JSON.parse(room))
+        // } else {
+        //     console.log('Cache Miss');
             const resp = await Room.find({})
-            redisClient.setEx('allRooms', EXPIRATION, JSON.stringify(resp))
+            // redisClient.setEx('allRooms', EXPIRATION, JSON.stringify(resp))
             return res.status(200).send(resp)
-        }
+        // }
     } catch (error) {
         return res.status(500).send(error)
     }
@@ -73,7 +73,7 @@ router.post('/createrooms', async (req, res) => {
         console.log(req.body);
         const newObj = await Room.create(req.body)
         await newObj.save()
-        await redisClient.flushAll()
+        // await redisClient.flushAll()
         return res.status(200).send({ message: 'New Meeting Room Created Successfully.' })
     } catch (error) {
         return res.status(401).send({ message: "Something Went Wrong, Try Again" });
