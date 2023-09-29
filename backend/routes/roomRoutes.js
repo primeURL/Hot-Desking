@@ -41,16 +41,16 @@ router.post("/", async (req, res) => {
 
 router.get('/:id', async (req, res) => {
     try {
-        const room = await redisClient.get("roomById")
-        if (room != null) {
-            console.log('Cache Hit');
-            return res.status(200).send(JSON.parse(room))
-        } else {
-            console.log('Cache Miss');
+        // const room = await redisClient.get("roomById")
+        // if (room != null) {
+        //     console.log('Cache Hit');
+        //     return res.status(200).send(JSON.parse(room))
+        // } else {
+        //     console.log('Cache Miss');
             const resp = await Room.findOne({ _id: req.params.id });
-            redisClient.setEx('roomById', EXPIRATION, JSON.stringify(resp))
+            // redisClient.setEx('roomById', EXPIRATION, JSON.stringify(resp))
             return res.status(200).send(resp)
-        }
+        // }
     } catch (error) {
         console.log(error);
         res.status(500).send(error)
@@ -60,16 +60,8 @@ router.get('/:id', async (req, res) => {
 router.get('/:location/:signIn/:signOut', async (req, res) => {
 
     try {
-        const rooms = await redisClient.get("locationWiseRooms")
-        if (rooms != null) {
-            console.log('Cache Hit');
-            return res.status(200).send(JSON.parse(rooms))
-        } else {
-            console.log('Cache Miss');
-            const resp = await Room.find({ location: req.params.location });
-            redisClient.setEx('locationWiseRooms',EXPIRATION, JSON.stringify(resp))
-            return res.status(200).send(resp)
-        }
+        const resp = await Room.find({ location: req.params.location });
+        return res.status(200).send(resp)
     } catch (error) {
         console.log(error);
         res.status(500).send(error)

@@ -1,8 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import '../styles/roomcard.css'
+import Swal from 'sweetalert2'
 const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
-
+  
+  function bookRoom(){
+    let token = localStorage.getItem('token')
+    if(!token){
+      window.location.href = '/login'
+    }
+  }
   return (
     <>
       <div className="roomCardContainer">
@@ -18,7 +25,7 @@ const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
             <p>Rent Per Hour : <b> {data.rentPerHr}</b></p>
           </div>
           { btnFlag && (  <Link to={`/singleroom/${checkIn}/${checkOut}/${data._id}`}>
-            <button className="roomCardbtn">BookNow</button>
+            <button className="roomCardbtn" onClick={bookRoom}>BookNow</button>
           </Link>) }
         
         </div>

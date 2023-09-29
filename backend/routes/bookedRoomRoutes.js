@@ -3,6 +3,7 @@ const Room = require("../models/Room");
 const BookedRoom =require('../models/BookedRooms')
 const {v4 : uuidv4} = require('uuid')
 const stripe = require('stripe')('sk_test_51NRnDBSAWFoAzQ9giqCrAl1VLo7QxdjN1kmjwlqdlNLBRpEgOvXrsU6wIH2IDMEe1RxzqfQjeFj5cyJNjSIQuNYJ00sFCnrPoU')
+// const stripe = require('stripe')()
 const Redis = require('redis')
 const redisClient = Redis.createClient()
 const EXPIRATION = 3600

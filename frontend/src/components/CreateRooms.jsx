@@ -23,14 +23,13 @@ const CreateRooms = () => {
         const base64 = await convertToBase64(body.image)
         // console.log(base64);
         body.image = base64
-        console.log('b',body);
         try {
             const url = env.backend_url_room + '/createrooms'
             const response = await axios.post(url,body)
             setMsg(response.data.message)
             Swal.fire({
               icon: 'success',
-              title: 'Room Booked Successfully',
+              title: 'Room Created Successfully',
              })
          } catch (error) {
             if (
