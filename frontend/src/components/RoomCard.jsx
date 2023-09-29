@@ -1,13 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import '../styles/roomcard.css'
-import Swal from 'sweetalert2'
+import {Link,useNavigate} from "react-router-dom";
+
 const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
   
+  const navigate = useNavigate()
   function bookRoom(){
     let token = localStorage.getItem('token')
     if(!token){
-      window.location.href = '/login'
+      navigate('/login')
+    }else{
+      navigate(`/singleroom/${checkIn}/${checkOut}/${data._id}`)
     }
   }
   return (
@@ -24,9 +27,7 @@ const RoomCard = ({ data,checkIn,checkOut,btnFlag}) => {
           <div>
             <p>Rent Per Hour : <b> {data.rentPerHr}</b></p>
           </div>
-          { btnFlag && (  <Link to={`/singleroom/${checkIn}/${checkOut}/${data._id}`}>
-            <button className="roomCardbtn" onClick={bookRoom}>BookNow</button>
-          </Link>) }
+          { btnFlag && (<button className="roomCardbtn" onClick={bookRoom}>BookNow</button>) }
         
         </div>
       </div>

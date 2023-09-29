@@ -11,6 +11,7 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Swal from 'sweetalert2'
 import AdbIcon from '@mui/icons-material/Adb';
 import { Outlet,Link,useNavigate} from "react-router-dom";
 import { useEffect,useState } from 'react'
@@ -59,9 +60,16 @@ function NavBar() {
   const handleCloseUserMenu = (setting) => {
     if(setting === 'LogOut'){
       localStorage.removeItem('token')
-      // window.location.reload()
-      // navigate('/home')
-      window.location.href = '/home';
+      localStorage.removeItem('userName')
+      settings = ['Profile', 'Login','Admin'];
+      setUsername(null)
+      Swal.fire({
+        icon: 'success',
+        title: 'LogOut Successfull',
+        footer: 'You will be Redirecting to Home Page.'
+      }).then(()=>{
+        navigate('/home')
+      })
     }
     setAnchorElUser(null);
   };
