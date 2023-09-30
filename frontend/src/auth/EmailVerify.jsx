@@ -2,11 +2,9 @@ import { useEffect, useState,Fragment } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
 import env from '../env.json'
-// import success from "../../images/success.png";
-// import styles from "./styles.module.css";
-// import { Fragment } from "react/cjs/react.production.min";
-
+import success from '../assets/success.png'
 const EmailVerify = () => {
+	
 	const [validUrl, setValidUrl] = useState(true);
 	const param = useParams();
 
@@ -15,13 +13,10 @@ const EmailVerify = () => {
 			try {
 				const url = `${env.backend_url_user}/${param.id}/verify/${param.token}`;
 				const { data } = await axios.get(url);
-				console.log('inside try block');
-				console.log(data);
 				if(!(data.message == 'Invalid link')){
 					setValidUrl(true);
 				}
 			} catch (error) {
-				console.log('inside catch block');
 				console.log(error);
 				setValidUrl(false);
 			}
@@ -51,7 +46,7 @@ const EmailVerify = () => {
 		<Fragment>
 			{validUrl ? (
 				<div style={container}>
-					<img src='' alt="success_img"/>
+					<img src={success} alt="success_img"/>
 					<h1>Email verified successfully</h1>
 					<Link to="/login">
 						<button style={green_btn}>Login</button>
@@ -63,5 +58,4 @@ const EmailVerify = () => {
 		</Fragment>
 	);
 };
-
 export default EmailVerify;

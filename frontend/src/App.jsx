@@ -3,20 +3,18 @@ import NavBar from "./components/Navbar"
 import SingUp from "./auth/SingUp";
 import Login from "./auth/Login";
 import EmailVerify from "./auth/EmailVerify";
-import SingleRoom from "./components/singleRoom";
+import SingleRoom from "./components/SingleRoom";
 import Rooms from "./components/Rooms";
 import BookDesk from './screens/BookDesk'
-import Home from './screens/home'
+import Home from './screens/Home'
 import About from "./screens/About";
 import Profile from "./screens/Profile";
 import Admin from './screens/Admin'
 function App() {
-  console.log(import.meta.env.VITE_APP_PUBLISH_KEY);
   return (
    <>
     <NavBar/>
     <Routes>
-
         <Route path="bookdesk" element={<BookDesk/>}></Route>
         <Route path="home" element={<Home/>}></Route>
         <Route path="/" element={<Home/>}></Route>
@@ -33,7 +31,6 @@ function App() {
           path="basic"
           element={<Protected Component={BasicTimer} />}
         ></Route> */}
-        
       </Routes>
    </>
   )

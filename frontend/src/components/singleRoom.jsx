@@ -5,7 +5,7 @@ import '../styles/singleroom.css'
 import axios from 'axios'
 import env from '../env.json'
 import Swal from 'sweetalert2'
-import Loader from '../components/Loader';
+import Loader from './Loader';
 import StripeCheckout from 'react-stripe-checkout';
 
 const SingleRoom = () => {
@@ -36,7 +36,6 @@ const SingleRoom = () => {
         }
         fectchRoom()
     }, [])
-    console.log('ca', capacity);
     let handleChange = (i, e) => {
         let newFormValues = [...formValues];
         newFormValues[i][e.target.name] = e.target.value;
@@ -57,38 +56,6 @@ const SingleRoom = () => {
 
     let handleSubmit = async (event) => {
         event.preventDefault();
-        // const obj = {
-        //     userId,
-        //     roomId: param.id,
-        //     roomName: data.roomName,
-        //     roomSize: data.roomSize,
-        //     checkIn: param.checkIn,
-        //     checkOut: param.checkOut,
-        //     bookingStartTime,
-        //     bookingEndTime,
-        //     meetingUsers: formValues
-        // }
-        // try {
-        //     setLoading(true)
-        //     const response = await axios.post(env.backend_url_bookedroom, obj)
-        //     Swal.fire({
-        //         icon: 'success',
-        //         title: 'Room Booked Successfully',
-        //         footer: 'You will be Redirecting to Profile Page.'
-        //       }).then(()=>{
-        //         navigate('/profile')
-        //       })
-        //     setLoading(false)
-        // } catch (error) {
-        //     Swal.fire({
-        //         icon: 'error',
-        //         title: 'Booking Failed',
-        //         text: error.response.data.message,
-        //       })
-        //     setLoading(false)
-        // }
-        // console.log(response);
-        // alert(JSON.stringify(formValues));
     }
     function calulateTotalAmount() {
         console.log(bookingStartTime);
@@ -143,7 +110,6 @@ const SingleRoom = () => {
             meetingUsers: formValues,
             token
         }
-        console.log(obj);
         try {
             setLoading(true)
             const response = await axios.post(env.backend_url_bookedroom, obj)

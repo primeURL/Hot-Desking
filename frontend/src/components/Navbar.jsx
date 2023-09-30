@@ -27,7 +27,6 @@ function NavBar() {
   const navigate = useNavigate()
   const token = localStorage.getItem('token')
   const userName = localStorage.getItem('userName')
-  console.log('token',token);
   useEffect(()=>{
     if(token){
       if(!settings.includes('LogOut')){
@@ -78,12 +77,10 @@ function NavBar() {
     <AppBar className='nav-bar' position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
-          <Typography
+          <Link to='/home'><Typography
             variant="h6"
             noWrap
             component="a"
-            href="/home"
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -96,7 +93,8 @@ function NavBar() {
           >
             <img src={logo} alt="" style={{width:'30px',borderRadius:'10px'}} />
           </Typography>
-
+          </Link>
+          
           <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
@@ -138,7 +136,6 @@ function NavBar() {
             variant="h5"
             noWrap
             component="a"
-            href=""
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },

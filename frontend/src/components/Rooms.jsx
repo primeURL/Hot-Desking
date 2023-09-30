@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import env from "../env.json";
@@ -18,13 +17,11 @@ export default function Rooms() {
   let [duplicateRooms,setDuplicateRooms] = useState([])
   const param = useParams();
   useEffect(() => {
-    console.log("inside useEffect");
     const url = `${env.backend_url_room}/${param.location}/${param.checkIn}/${param.checkOut}`;
     (async() => {
       try {
         setLoading(true)
         const { data } = await axios.get(url);
-        console.log('utk',data);
         setRooms(data);
         duplicateRooms = data
         setDuplicateRooms(duplicateRooms)
@@ -33,13 +30,10 @@ export default function Rooms() {
       } catch (error) {
         console.log(error);
         setLoading(false)
-
       }
     })();
   }, []);
   function filterRooms(){
-    // debugger
-    console.log('dr',duplicateRooms);
     let tempRooms = [];
     let filteredRooms = []
     let bookedRooms = []
@@ -64,9 +58,6 @@ export default function Rooms() {
         tempRooms.push(room)
       }
    }
-    console.log('filtedred room',filteredRooms);
-    console.log('bookedRooom',bookedRooms);
-    console.log('tempRooms',tempRooms);
     setBookedRooms(bookedRooms)
     setRooms(tempRooms);
   }

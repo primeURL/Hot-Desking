@@ -3,11 +3,9 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import { Link } from "react-router-dom";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -141,8 +139,6 @@ export default function SignUp() {
               </Grid>
               
             </Grid>
-            {/* {error && <div style={{color:'red',margin:'5px',padding:'5px'}}>{error}</div>} */}
-            {/* {msg && <div style={{color:'green',margin:'5px',padding:'5px'}}>{msg}</div>} */}
             <Button
               type="submit"
               fullWidth
@@ -153,7 +149,7 @@ export default function SignUp() {
             </Button>
             <Grid container justifyContent="flex-end">
               <Grid item>
-                <Link href="login" variant="body2">
+                <Link to="/login" variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>
