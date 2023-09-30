@@ -144,7 +144,6 @@ router.get("/:id/verify/:token/", async (req, res) => {
 			token: req.params.token,
 		});
 		if (!token) return res.status(200).send({ message: "Invalid link" });
-        console.log('toeknMila:',token);
 
 		await User.updateOne({ _id: user._id}, {$set : {verified: true} });
 		// await User.update()
